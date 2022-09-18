@@ -30,3 +30,13 @@ func (app *application) errorJSON(w http.ResponseWriter, err error) {
 
 	app.writeJSON(w, http.StatusBadRequest, theError, "error")
 }
+
+func (app *application) databaseErrorJSON(w http.ResponseWriter, err error) {
+	type jsonError struct {
+		Message string `json:"message"`
+	}
+
+	theError := jsonError{Message: err.Error()}
+
+	app.writeJSON(w, http.StatusInternalServerError, theError, "error")
+}

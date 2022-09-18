@@ -40,7 +40,6 @@ func (app *application) statusHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(js)
 }
 
-
 // statusHandler godoc
 // @Summary     Get Task
 // @Description Get the task by id
@@ -60,12 +59,18 @@ func (app *application) getOneTask(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(params.ByName("id"))
 
 	if err != nil {
-		app.logger.Print(errors.New("Invalid Id parameter"))
+		app.logger.Print(errors.New("invalid Id parameter"))
 		app.errorJSON(w, err)
 		return
 	}
 
 	task, err := app.models.DB.Get(id)
+
+	if err != nil {
+		app.databaseErrorJSON(w, err)
+		return
+	}
+
 	app.logger.Print(task)
 	err = app.writeJSON(w, http.StatusOK, &task, "task")
 
